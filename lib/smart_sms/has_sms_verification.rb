@@ -138,6 +138,7 @@ module SmartSMS
           if SmartSMS.config.store_sms_in_local
             message = send(self.class.messages_association_name).build sms
             message.code = text
+            message.send_time ||= Time.zone.now
             message.save
           else
             sms
