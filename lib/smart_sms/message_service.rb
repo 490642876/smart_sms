@@ -19,16 +19,17 @@ module SmartSMS
       # * method 如若要使用通用短信接口, 需要 :method => :general
       # * tpl_id 选择发送短信的模板, 默认是2
       def deliver(phone, content, options = {})
-        content = "【Summer】您的验证码是#{content}。如非本人操作，请忽略本短信"
-        Request.post 'sms/single_send.json', mobile: phone, text: content, extend: options[:extend]
-        # if options[:method] == :general
-        #   Request.post 'sms/send.json', mobile: phone, text: content, extend: options[:extend]
-        # else
-        #   options[:code] = content
-        #   message = parse_content options
-        #   tpl_id = options[:tpl_id] || SmartSMS.config.template_id
-        #   Request.post 'sms/tpl_send.json', tpl_id: tpl_id, mobile: phone, tpl_value: message
-        # end
+        if options[:method] == :general
+          Request.post 'sms/single_send.json', mobile: phone, text: content, extend: options[:extend]
+        elsif phone.include?('+') && !phone.include?('+86')
+          content = "【Summer】Your verification code is #{content}. Welcome to Summer,let's enjoy the campus love before we graduate"
+          Request.post 'sms/single_send.json', mobile: phone, text: content, extend: options[:extend]
+        else
+          options[:code] = content
+          message = parse_content options
+          tpl_id = options[:tpl_id] || SmartSMS.config.template_id
+          Request.post 'sms/tpl_single_send.json', tpl_id: tpl_id, mobile: phone, tpl_value: message
+        end
       end
 
       # 根据sid来查询短信记录
