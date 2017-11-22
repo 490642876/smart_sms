@@ -19,7 +19,7 @@ module SmartSMS
       # * method 如若要使用通用短信接口, 需要 :method => :general
       # * tpl_id 选择发送短信的模板, 默认是2
       def deliver(phone, content, options = {})
-        Request.post 'v2/sms/single_send.json', mobile: phone, text: content, extend: options[:extend]
+        Request.post 'sms/single_send.json', mobile: phone, text: content, extend: options[:extend]
         # if options[:method] == :general
         #   Request.post 'sms/send.json', mobile: phone, text: content, extend: options[:extend]
         # else
