@@ -117,7 +117,7 @@ module SmartSMS
         def deliver(text = SmartSMS::VerificationCode.random)
           result = SmartSMS.deliver send(self.class.sms_mobile_column), text
           if result['code'] == 0
-            sms = SmartSMS.find_by_sid(result['result']['sid'])['sms']
+            sms = SmartSMS.find_by_sid(result['sid'])
             save_or_return_message sms, text
           else
             errors.add :deliver, result
